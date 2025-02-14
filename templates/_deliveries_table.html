@@ -1,0 +1,83 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{{ 'N° Document' if lang == 'fr' else 'رقم المستند' }}</th>
+            <th>{{ 'Destinataire' if lang == 'fr' else 'اسم المستلم' }}</th>
+            <th>{{ 'Région' if lang == 'fr' else 'المنطقة' }}</th>
+            <th>{{ 'Date de livraison' if lang == 'fr' else 'تاريخ التسليم' }}</th>
+            <th>{{ 'Statut' if lang == 'fr' else 'الحالة' }}</th>
+            <th>{{ 'Détails des produits' if lang == 'fr' else 'تفاصيل المنتجات' }}</th>
+            <th>{{ 'Actions' if lang == 'fr' else 'الإجراءات' }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for delivery in deliveries %}
+        <tr>
+            <td>{{ delivery.id }}</td>
+            <td>{{ delivery.recipient_name }}</td>
+            <td>{{ delivery.region }}</td>
+            <td>{{ delivery.delivery_date.strftime('%Y-%m-%d') }}</td>
+            <td>
+                <form action="{{ url_for('update_status', delivery_id=delivery.id) }}" method="POST" class="d-inline">
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="pending" {{ 'selected' if delivery.status == 'pending' }}>
+                            {{ 'En cours' if lang == 'fr' else 'قيد التسليم' }}
+                        </option>
+                        <option value="delivered" {{ 'selected' if delivery.status == 'delivered' }}>
+                            {{ 'Livré' if lang == 'fr' else 'تم التسليم' }}
+                        </option>
+                        <option value="cancelled" {{ 'selected' if delivery.status == 'cancelled' }}>
+                            {{ 'Annulé' if lang == 'fr' else 'ملغى' }}
+                        </option>
+                    </select>
+                </form>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-info" onclick="showDeliveryDetails({{ delivery.id }})">
+                    {{ 'Voir détails' if lang == 'fr' else 'عرض التفاصيل' }}
+                </button>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a href="{{ url_for('delivery_pdf', delivery_id=delivery.id) }}" class="btn btn-sm btn-secondary" target="_blank">
+                        {{ 'PDF' if lang == 'fr' else 'تحميل PDF' }}
+                    </a>
+                    <a href="{{ url_for('delivery_label', delivery_id=delivery.id) }}" class="btn btn-sm btn-info" target="_blank">
+                        {{ 'Étiquette' if lang == 'fr' else 'طباعة الملصق' }}
+                    </a>
+                    <form action="{{ url_for('delete_delivery', delivery_id=delivery.id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ 'Êtes-vous sûr de vouloir supprimer cette livraison?' if lang == 'fr' else 'هل أنت متأكد من حذف مستند التسليم هذا؟' }}')">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            {{ 'Supprimer' if lang == 'fr' else 'حذف' }}
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        <tr id="details-{{ delivery.id }}" style="display: none;">
+            <td colspan="7">
+                <div class="p-3">
+                    <h5>{{ 'Produits livrés:' if lang == 'fr' else 'المنتجات المسلمة:' }}</h5>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>{{ 'Produit' if lang == 'fr' else 'المنتج' }}</th>
+                                <th>{{ 'Quantité' if lang == 'fr' else 'الكمية' }}</th>
+                                <th>{{ 'N° de lot' if lang == 'fr' else 'رقم الحصة' }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in delivery.items %}
+                            <tr>
+                                <td>{{ item.product_name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.batch_number }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

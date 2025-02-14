@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="{{ 'fr' if lang == 'fr' else 'ar' }}" dir="{{ 'ltr' if lang == 'fr' else 'rtl' }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'Bon de Livraison' if lang == 'fr' else 'مستند التسليم' }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+            @top-center {
+                content: "EVEXIA PHARMA";
+                font-size: 8pt;
+            }
+            @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+                font-size: 8pt;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 10pt;
+        }
+        .header {
+            text-align: center;
+            padding: 1em 0;
+            border-bottom: 1px solid #3498db;
+            margin-bottom: 1em;
+        }
+        .header h2 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 16pt;
+        }
+        .company-info {
+            text-align: center;
+            margin-bottom: 1em;
+            font-size: 8pt;
+            color: #7f8c8d;
+        }
+        .document-title {
+            text-align: center;
+            font-size: 14pt;
+            color: #2c3e50;
+            margin: 0.5em 0;
+        }
+        .info-section {
+            margin: 1em 0;
+            padding: 0.5em;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+        .info-item {
+            margin-bottom: 0.3em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .info-item strong {
+            color: #2c3e50;
+        }
+        .acknowledgment {
+            margin: 1em 0;
+            padding: 0.5em;
+            background: #f5f6fa;
+            border-left: 3px solid #3498db;
+            font-style: italic;
+            direction: ltr;
+            text-align: left;
+            font-size: 9pt;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+            background: white;
+            font-size: 9pt;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 6px;
+            text-align: {{ 'left' if lang == 'fr' else 'right' }};
+        }
+        td {
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            margin-top: 1em;
+            padding-top: 0.5em;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 7pt;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>EVEXIA PHARMA</h2>
+    </div>
+
+    <div class="company-info">
+        ZI Oued Hmimim N°3, Section B, Section H1, El Khroub Constantine ALGERIA<br>
+        Mo: 0770930606
+    </div>
+
+    <div class="document-title">
+        {{ 'DÉCHARGE' if lang == 'fr' else 'مستند التسليم' }}
+    </div>
+
+    <div class="info-section">
+        <div class="info-item">
+            <strong>{{ 'N° Document:' if lang == 'fr' else 'رقم المستند:' }}</strong>
+            {{ delivery.id }}
+        </div>
+        <div class="info-item">
+            <strong>{{ 'Destinataire:' if lang == 'fr' else 'اسم المستلم:' }}</strong>
+            {{ delivery.recipient_name }}
+        </div>
+        <div class="info-item">
+            <strong>{{ 'Fonction:' if lang == 'fr' else 'طبيعة العمل:' }}</strong>
+            {{ delivery.recipient_job }}
+        </div>
+        <div class="info-item">
+            <strong>{{ 'Région:' if lang == 'fr' else 'المنطقة:' }}</strong>
+            {{ delivery.region }}
+        </div>
+        <div class="info-item">
+            <strong>{{ 'Date de livraison:' if lang == 'fr' else 'تاريخ التسليم:' }}</strong>
+            {{ delivery.delivery_date.strftime('%Y-%m-%d') }}
+        </div>
+    </div>
+
+    <div class="acknowledgment">
+        Je soussigné {{ delivery.recipient_name }}, accuse réception des échantillons de produits suivants :
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'Produit' if lang == 'fr' else 'المنتج' }}</th>
+                <th>{{ 'Quantité' if lang == 'fr' else 'الكمية' }}</th>
+                <th>{{ 'N° de Lot' if lang == 'fr' else 'رقم الحصة' }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in delivery.items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.batch_number }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        {{ 'Document généré le' if lang == 'fr' else 'تم إنشاء المستند في' }} {{ delivery.created_at.strftime('%Y-%m-%d %H:%M') }}
+    </div>
+</body>
+</html>

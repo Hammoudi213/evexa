@@ -1,0 +1,79 @@
+/* RTL Support */
+[dir="rtl"] .navbar-nav {
+    padding-right: 0;
+}
+
+[dir="rtl"] .dropdown-menu {
+    text-align: right;
+}
+
+/* Custom Styles */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.table th {
+    font-weight: 600;
+}
+
+.btn-icon {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Status Colors */
+.status-pending {
+    color: #ffc107;
+}
+
+.status-delivered {
+    color: #28a745;
+}
+
+.status-cancelled {
+    color: #dc3545;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+}
+
+/* Form Styling */
+.form-label {
+    font-weight: 500;
+}
+
+.required::after {
+    content: "*";
+    color: #dc3545;
+    margin-right: 4px;
+}
+
+/* Product Entry Styling */
+.product-entry {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Tables */
+.table-responsive {
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}

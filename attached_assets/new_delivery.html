@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ 'Créer un nouveau bon de livraison' if lang == 'fr' else 'إنشاء مستند تسليم جديد' }}</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('new_delivery') }}" id="deliveryForm">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">{{ 'Nom du destinataire' if lang == 'fr' else 'اسم المستلم' }}</label>
+                    <input type="text" class="form-control" name="recipient_name" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ 'Fonction' if lang == 'fr' else 'طبيعة العمل' }}</label>
+                    <input type="text" class="form-control" name="recipient_job" required>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">{{ 'Région' if lang == 'fr' else 'المنطقة' }}</label>
+                    <input type="text" class="form-control" name="region" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">{{ 'Date de livraison' if lang == 'fr' else 'تاريخ التسليم' }}</label>
+                    <input type="date" class="form-control" name="delivery_date" required>
+                </div>
+            </div>
+
+            <div id="products-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>{{ 'Produits' if lang == 'fr' else 'المنتجات' }}</h4>
+                    <button type="button" class="btn btn-success" onclick="addProductEntry()">
+                        <i class="fas fa-plus"></i> {{ 'Ajouter un produit' if lang == 'fr' else 'إضافة منتج' }}
+                    </button>
+                </div>
+                <div class="product-entry mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">{{ 'Nom du produit' if lang == 'fr' else 'اسم المنتج' }}</label>
+                            <input type="text" class="form-control" name="product[]" list="product-suggestions" required>
+                            <datalist id="product-suggestions"></datalist>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ 'Quantité' if lang == 'fr' else 'الكمية' }}</label>
+                            <input type="number" class="form-control" name="quantity[]" required min="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ 'N° de lot' if lang == 'fr' else 'رقم الحصة' }}</label>
+                            <input type="text" class="form-control" name="batch_number[]" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">{{ 'Enregistrer' if lang == 'fr' else 'حفظ المستند' }}</button>
+                <a href="{{ url_for('view_deliveries') }}" class="btn btn-secondary">{{ 'Annuler' if lang == 'fr' else 'إلغاء' }}</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// تعريف الترجمات للاستخدام في ملف script.js
+window.translations = {
+    productLabel: "{{ 'Nom du produit' if lang == 'fr' else 'اسم المنتج' }}",
+    quantityLabel: "{{ 'Quantité' if lang == 'fr' else 'الكمية' }}",
+    batchLabel: "{{ 'N° de lot' if lang == 'fr' else 'رقم الحصة' }}"
+};
+</script>
+{% endblock %}

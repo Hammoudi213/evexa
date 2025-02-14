@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="{{ 'fr' if lang == 'fr' else 'ar' }}" dir="{{ 'ltr' if lang == 'fr' else 'rtl' }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'Étiquette' if lang == 'fr' else 'ملصق' }}</title>
+    <style>
+        @page {
+            size: 100mm 150mm;
+            margin: 5mm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 10px;
+        }
+        .recipient-info {
+            border: 2px solid #000;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .company-name {
+            font-size: 18pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .delivery-info {
+            font-size: 12pt;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="company-name">EVEXIA PHARMA</div>
+    <div class="recipient-info">
+        <div class="delivery-info">{{ 'Destinataire' if lang == 'fr' else 'المستلم' }}: {{ delivery.recipient_name }}</div>
+        <div class="delivery-info">{{ 'Fonction' if lang == 'fr' else 'الوظيفة' }}: {{ delivery.recipient_job }}</div>
+        <div class="delivery-info">{{ 'Région' if lang == 'fr' else 'المنطقة' }}: {{ delivery.region }}</div>
+        <div class="delivery-info">{{ 'Date' if lang == 'fr' else 'التاريخ' }}: {{ delivery.delivery_date.strftime('%Y-%m-%d') }}</div>
+    </div>
+</body>
+</html>

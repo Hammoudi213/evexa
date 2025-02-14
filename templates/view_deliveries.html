@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2>{{ 'Bons de livraison' if lang == 'fr' else 'سجلات التسليم' }}</h2>
+        <div>
+            <a href="{{ url_for('export_backup') }}" class="btn btn-success me-2">
+                {{ 'Exporter la sauvegarde' if lang == 'fr' else 'تصدير نسخة احتياطية' }}
+            </a>
+            <form action="{{ url_for('import_backup') }}" method="POST" enctype="multipart/form-data" class="d-inline me-2">
+                <input type="file" name="backup_file" accept=".json" style="display: none;" onchange="this.form.submit()" id="backup_file">
+                <button type="button" class="btn btn-warning" onclick="document.getElementById('backup_file').click()">
+                    {{ 'Importer la sauvegarde' if lang == 'fr' else 'استيراد نسخة احتياطية' }}
+                </button>
+            </form>
+            <a href="{{ url_for('new_delivery') }}" class="btn btn-primary">
+                {{ 'Nouvelle livraison' if lang == 'fr' else 'تسليم جديد' }}
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <form id="filterForm" class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">{{ 'Destinataire' if lang == 'fr' else 'اسم المستلم' }}</label>
+                    <input type="text" name="recipient" class="form-control filter-input" value="{{ request.args.get('recipient', '') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">{{ 'Région' if lang == 'fr' else 'المنطقة' }}</label>
+                    <input type="text" name="region" class="form-control filter-input" value="{{ request.args.get('region', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">{{ 'Date de' if lang == 'fr' else 'من تاريخ' }}</label>
+                    <input type="date" name="date_from" class="form-control filter-input" value="{{ request.args.get('date_from', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">{{ 'Date à' if lang == 'fr' else 'إلى تاريخ' }}</label>
+                    <input type="date" name="date_to" class="form-control filter-input" value="{{ request.args.get('date_to', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">{{ 'Statut' if lang == 'fr' else 'الحالة' }}</label>
+                    <select name="status" class="form-select filter-input">
+                        <option value="">{{ 'Tous' if lang == 'fr' else 'الكل' }}</option>
+                        <option value="pending" {{ 'selected' if request.args.get('status') == 'pending' }}>
+                            {{ 'En cours' if lang == 'fr' else 'قيد التسليم' }}
+                        </option>
+                        <option value="delivered" {{ 'selected' if request.args.get('status') == 'delivered' }}>
+                            {{ 'Livré' if lang == 'fr' else 'تم التسليم' }}
+                        </option>
+                        <option value="cancelled" {{ 'selected' if request.args.get('status') == 'cancelled' }}>
+                            {{ 'Annulé' if lang == 'fr' else 'ملغى' }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <a href="{{ url_for('view_deliveries') }}" class="btn btn-secondary">{{ 'Réinitialiser' if lang == 'fr' else 'إعادة تعيين' }}</a>
+                </div>
+            </div>
+        </form>
+
+        <div id="deliveriesTable" class="table-responsive">
+            {% include '_deliveries_table.html' %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to update the table with filtered results
+    function updateDeliveries() {
+        const formData = new FormData(document.getElementById('filterForm'));
+        const params = new URLSearchParams(formData);
+
+        fetch(`{{ url_for('view_deliveries') }}?${params.toString()}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('deliveriesTable').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error updating deliveries:', error);
+        });
+    }
+
+    // Add event listeners to all filter inputs
+    document.querySelectorAll('.filter-input').forEach(input => {
+        input.addEventListener('input', () => {
+            updateDeliveries();
+        });
+        input.addEventListener('change', () => {
+            updateDeliveries();
+        });
+    });
+</script>
+{% endblock %}
